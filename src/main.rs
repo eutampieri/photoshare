@@ -27,9 +27,17 @@ fn main() {
             std::thread::spawn(move || {
                 log::info!("Analysing {}.", file.display());
                 let data = std::fs::read(&file).unwrap();
-                let hash = blake3::hash(&data);
-                log::info!("{} is {:?}", file.display(), mimetype::detect(&data));
-                log::debug!("Hash for {} is {}.", file.display(), hash);
+                let mime = mimetype::detect(&data).mime;
+                match mime.split('/').next().unwrap() {
+                    "image" => {
+                        let hash = blake3::hash(&data);
+                        log::info!("{} is {}", file.display(), mime);
+                        log::debug!("Hash for {} is {}.", file.display(), hash);
+                    }
+                    _ => {
+                        log::info!("Skipping {} because of unknown mime type: {}", file.display(), mime);
+                    }
+                }
             });
         });
     }
