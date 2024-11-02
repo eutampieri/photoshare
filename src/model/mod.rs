@@ -6,4 +6,9 @@ pub struct User<I> {
     email: String,
 }
 
-pub struct Album {}
+pub struct Album<I> {
+    pub name: String,
+    pub creation_date: u64,
+    pub rw_users: std::collections::HashSet<I>,
+    pub ro_users: std::collections::HashSet<I>,
+}
